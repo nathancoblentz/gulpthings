@@ -1,0 +1,23 @@
+<!-- layout.nunjucks -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+	<!--[htmlclean-protect]-->
+	<!-- inject:css -->
+	<!-- endinject -->
+	<!--[/htmlclean-protect]-->
+</head>
+<body>
+
+  <!-- You write code for this content block in another file -->
+  {% block content %} {% endblock %}
+
+    <!--[htmlclean-protect]-->
+    <!-- inject:js -->
+    <!-- endinject -->
+    <!--[/htmlclean-protect]-->
+</body>
+</html>

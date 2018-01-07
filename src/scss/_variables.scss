@@ -1,0 +1,30 @@
+@import "util/util.scss";
+
+$enable-shadows: true;
+
+$themeColor: $BurningOrange;
+$bgColor: $themeColor;
+$theme-colors: ("primary": ($themeColor));
+
+
+$containerColor: #fff;
+
+$bodyFont:	Poppins;
+$bodyURL: $bodyFont;
+$bodyColor: $Nero;
+$bodyStyle: sans-serif;
+
+$headingFont:  Ubuntu;
+$headingURL: $headingFont;
+$headingColor: $themeColor;
+$headingStyle: sans-serif;
+
+$displayFont:  Playball;
+$displayURL: $headingFont;
+$displayColor: $themeColor;
+$displayStyle: sans-serif;
+
+$codeFont:  Inconsolata;
+$codeURL: $headingFont;
+$codeColor: $themeColor;
+$codeStyle: sans-serif;
