@@ -23,6 +23,7 @@ https://hackernoon.com/how-to-automate-all-the-things-with-gulp-b21a3fc96885
 
 9. Resources: 
     - Bootstrap Documentation: http://getbootstrap.com/
+    - My Bootstrap templates totally ripped off from https://wrapbootstrap.com/ and my Components page is also ripped off from http://bootswatch.com .
     - How to Modularize HTML Using Template Engines and Gulp (an awesome breakdown of Nunjucks can be found here) https://zellwk.com/blog/nunjucks-with-gulp/
     - How to Automate All the Things With Gulp: https://hackernoon.com/how-to-automate-all-the-things-with-gulp-b21a3fc96885
     - SASS Documentation: http://sass-lang.com/
