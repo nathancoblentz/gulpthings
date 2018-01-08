@@ -2,95 +2,119 @@
 
 //DEPENDENCIES
 
-  var gulp = require('gulp');
-  var sass = require('gulp-sass');
-  var inject = require('gulp-inject');
-  var browserSync = require('browser-sync').create();
-  var htmlclean = require('gulp-htmlclean');
-  var cleanCSS = require('gulp-clean-css');
-  var concat = require('gulp-concat');
-  var uglify = require('gulp-uglify');
-  var del = require('del');
-  var git = require('gulp-git');
+  //CORE DEPENDENCIES
 
-  var imagemin = require('gulp-imagemin');
-  var imageminPngquant = require('imagemin-pngquant');
-  var imageminZopfli = require('imagemin-zopfli');
-  var imageminMozjpeg = require('imagemin-mozjpeg'); //need to run 'brew install libpng'
-  var imageminGiflossy = require('imagemin-giflossy');
-  var nunjucksRender = require('gulp-nunjucks-render');
+    var gulp = require('gulp');
+    var sass = require('gulp-sass');
+    var inject = require('gulp-inject');
+    var browserSync = require('browser-sync').create();
+
+  //COMPILING 
+
+    var htmlclean = require('gulp-htmlclean');
+    var cleanCSS = require('gulp-clean-css');
+    var concat = require('gulp-concat');
+    var uglify = require('gulp-uglify');
+
+  //CLEANUP 
+
+    var del = require('del');
+    
+  //GIT
+
+    var git = require('gulp-git');
+
+  //IMAGES
+
+    var imagemin = require('gulp-imagemin');
+    var imageminPngquant = require('imagemin-pngquant');
+    var imageminZopfli = require('imagemin-zopfli');
+    var imageminMozjpeg = require('imagemin-mozjpeg'); //need to run 'brew install libpng'
+    var imageminGiflossy = require('imagemin-giflossy');
+
+  //NUNJUCKS - TEMPLATE ENGINE  
+
+    var nunjucksRender = require('gulp-nunjucks-render');
 
 
 
-    gulp.task('default', ['clean', 'inject', 'serve']);
+//DEFAULT TASK
+
+  gulp.task('default', ['nunjucks', 'inject', 'serve']);
 
 
-//PATHS
+//PATH VARIABLES
 
   var paths = {
-    src:     'src/**/*',
-    srcHTML: 'src/**/*.{html,htm}',
-    srcCSS:  'src/**/*.css',
-    srcJS:   'src/**/*.js',
-    srcIMG:  'src/**/*.{gif,png,jpg}',
-    
-    tmp:      'tmp',
-    tmpIndex: 'tmp/**/*.{html,htm}',
-    tmpCSS:   'tmp/**/*.css',
-    tmpJS:    'tmp/**/*.js',
-    tmpIMG:   'tmp/**/*.{gif,png,jpg}',
 
-    dist:       'dist',
-    distIndex:  'dist/**/*.{html,htm}',
-    distCSS:    'dist/**/*.css',
-    distJS:     'dist/**/*.js',
-    distIMG:    'dist/**/*.{gif,png,jpg}'
+    //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH
+      src:     'src/**/*',
+      srcHTML: 'src/**/*.{html,htm}',
+      srcNJK:  'src/content/**/*.+(html|nunjucks)',
+      srcCSS:  'src/**/*.scss',
+      srcJS:   'src/**/*.js',
+      srcIMG:  'src/**/*.{gif,png,jpg}',
+      
+    //TMP - THESE FILES WILL APPEAR ON YOUR VIRTUAL SERVER FOR DEVELOPMENT
+      tmp:      'tmp',
+      tmpIndex: 'tmp/**/*.{html,htm}',
+      tmpCSS:   'tmp/**/*.css',
+      tmpJS:    'tmp/**/*.js',
+      tmpIMG:   'tmp/**/*.{gif,png,jpg}',
+
+    //DIST - THESE FILES ARE FULLY PROCESSED, COMPRESSED, MINIFIED AND READY FOR DEPLOYMENT
+      dist:       'dist',
+      distIndex:  'dist/**/*.{html,htm}',
+      distCSS:    'dist/**/*.css',
+      distJS:     'dist/**/*.js',
+      distIMG:    'dist/**/*.{gif,png,jpg}'
 
   };
 
 
-//COPY HTML/CSS/JS
+  //TEMPLATE ENGINE
 
+    gulp.task('nunjucks', function() {
+    // GET ALL MY CONTENT FILES  
+    return gulp.src(paths.srcNJK) 
+
+      // RUN 'EM THROUGH THE TEMPLATE ENGINE
+      .pipe(nunjucksRender ({path: ['src/nunjucks/templates']}))
+
+      // DROP 'EM OFF IN THE ROOT OF THE SRC FOLDER   
+      .pipe(gulp.dest('src/')); 
+
+    });
+
+// COPY HTML/CSS/JS
+
+  // COPY THOSE NEWLY PROCESSED FILES INTO THE TMP FOLDER
   gulp.task('html', function () {
     return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.tmp));
   });
-  gulp.task('css', function () {
+
+  // COPY MY SCSS FILES INTO THE TMP FOLDER
+  gulp.task('scss', function () {
     return gulp.src(paths.srcCSS).pipe(gulp.dest(paths.tmp));
   });
+
+  // COPY MY SCRIPTS INTO THE TMP FOLDER
   gulp.task('js', function () {
     return gulp.src(paths.srcJS).pipe(gulp.dest(paths.tmp));
   });
+
+  // COPY MY IMAGES TO THE TMP FOLDER
   gulp.task('img', function () {
     return gulp.src(paths.srcIMG).pipe(gulp.dest(paths.tmp));
   });
 
 
-  //gulp.task('jpg', function () {return gulp.src(paths.srcJPG).pipe(gulp.dest(paths.tmp));});
-  //gulp.task('png', function () {return gulp.src(paths.srcPNG).pipe(gulp.dest(paths.tmp));});
+  // COPY ALL THE THINGS!!!
 
-  gulp.task('copy', ['html', 'js', 'css', 'img']);
-
-
-//INJECT
-
-  gulp.task('inject', ['sass', 'copy'], function () {
-    var css = gulp.src(paths.tmpCSS);
-    var js = gulp.src(paths.tmpJS);
-    var img =gulp.src(paths.tmpIMG);
-    //var jpg = gulp.src(paths.tmpJPG);
-    //var png = gulp.src(paths.tmpPNG);
-    return gulp.src(paths.tmpIndex)
-      .pipe(inject( css, { relative:true  } ))
-      .pipe(inject( js,  { relative:true  } ))
-      .pipe(inject( img,  { relative:true } ))
-      .pipe(gulp.dest(paths.tmp));
-  });
+    gulp.task('copy', ['html', 'js', 'scss', 'img']);
 
 
-
-//SERVE/SYNC/SASS
-
-  // Compile sass into CSS & auto-inject into browsers
+  // COMPILE ALL MY SASS AND MOVE IT TO TMP
    
     gulp.task('sass', function() {
         return gulp.src('src/style.scss')
@@ -99,45 +123,86 @@
             .pipe(browserSync.stream());
     });
 
-  //SERVER, BROWSER-SYNC  
+    // DO ALL THAT STUFF WE JUST SAID IN ONE COMMAND, AND SOME MORE COOL STUFF TOO!!!
 
-gulp.task('serve', ['sass'], function() {
+    gulp.task('inject', ['sass', 'copy'], function () {
 
-    browserSync.init({
-        server: "./tmp"
+  // MAKE MY PATH VARIABLES EVEN SHORTER AND MORE SUCCINCT SO I CAN PASS THEM INTO THIS NEXT FUNCTION
+      
+      var css = gulp.src(paths.tmpCSS);
+      var js = gulp.src(paths.tmpJS);
+      var img =gulp.src(paths.tmpIMG);
+    
+  // LINK MY STYLESHEETS IN THE HEAD OF EACH WEB PAGE AND MY SCRIPTS JUST BELOW THE FOOTER WHERE THEY BELONG
+
+      return gulp.src(paths.tmpIndex)
+        .pipe(inject( css, { relative:true  } ))
+        .pipe(inject( js,  { relative:true  } ))
+        //.pipe(inject( img,  { relative:true } )) I"M NOT SURE IF I ACTUALLY NEED THIS PIECE.
+        .pipe(gulp.dest(paths.tmp));
     });
 
-    gulp.watch("src/scss/*.scss", ['sass']);
-    gulp.watch('./src/**/*.html', ['inject']);
 
-    gulp.watch("./tmp/**/*.html").on('change', browserSync.reload);
-});
+
+//SERVER, BROWSER-SYNC  
+
+  //CREATE A VIRTUAL SERVER USING THE FILES IN THE TMP FOLDER, AND MAKE SURE MY SASS IS FRESHLY COMPILED
+
+    gulp.task('serve', ['sass'], function() {
+    browserSync.init({ server: "./tmp"  });
+
+  //WATCH MY NUNJUCKS FILES AND RUN 'NUNJUCKS' (THE TEMPLATE ENGINE) IF ANYTHING CHANGES 
+
+     gulp.watch(paths.srcNJK, ['nunjucks']);
+
+  //WATCH MY SASS FILES AND RUN 'SASS' IF ANYTHING CHANGES 
+
+     gulp.watch(paths.srcCSS, ['sass']);
+
+  //WATCH MY HTML FILES AND RUN 'INJECT' IF ANYTHING CHANGES. 
+
+     gulp.watch(paths.srcHTML, ['inject']);
+
+  //WATCH ALL THE HTML FILES AND REFRESH THE BROWSER EVERY TIME I SAVE ANY CHANGES 
+
+       gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);});
+
 
 //DIST BUILD
 
-  gulp.task('html:dist', function () {
-    return gulp.src(paths.srcHTML)
-      .pipe(htmlclean())
-      .pipe(gulp.dest(paths.dist));
-  });
-  gulp.task('css:dist', function () {
-    return gulp.src(paths.tmpCSS)
-      .pipe(concat('style.min.css'))
-      .pipe(cleanCSS())
-      .pipe(gulp.dest(paths.dist));
-  });
-  gulp.task('js:dist', function () {
-    return gulp.src(paths.srcJS)
-      .pipe(concat('script.min.js'))
-      .pipe(uglify())
-      .pipe(gulp.dest(paths.dist));
-  });
+
+  //MINIFY ALL MY HTML, THEN DROP IT INTO 'DIST' FOR DEPLOYMENT
+
+    gulp.task('html:dist', function () {
+      return gulp.src(paths.srcHTML)
+        .pipe(htmlclean())
+        .pipe(gulp.dest(paths.dist));
+    });
+
+  //MINIFY MY STYLESHEET AND DROP IT INTO 'DIST' FOR DEPLOYMENT
+    
+    gulp.task('css:dist', function () {
+      return gulp.src(paths.tmpCSS)
+        .pipe(concat('style.min.css'))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest(paths.dist));
+    });
+
+  //COMPILE MY SCRIPTS INTO ONE BIG UGLY MINIFIED .JS FILE AND DROP IT YOU KNOW WHERE FOR DEPLOYMENT
+
+    gulp.task('js:dist', function () {
+      return gulp.src(paths.srcJS)
+        .pipe(concat('script.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.dist));
+    });
   
-  //COMPRESS ALL IMAGES
+  //COMPRESS ALL IMAGES - WE CAN DO PLENTY OF FINE TUNING FROM HERE IF NEEDED
+
     gulp.task('imagemin', function() {
         return gulp.src(['src/**/*.{gif,png,jpg}'])
-            .pipe(imagemin([
-                //png
+            .pipe(imagemin([ //png
+                
                 imageminPngquant({
                     speed: 1,
                     quality: 98 //lossy settings
@@ -151,6 +216,7 @@ gulp.task('serve', ['sass'], function() {
                 //     optimizationLevel: 3
                 // }),
                 //gif very light lossy, use only one of gifsicle or Giflossy
+
                 imageminGiflossy({
                     optimizationLevel: 3,
                     optimize: 3, //keep-empty: Preserve empty transparent frames
@@ -174,28 +240,35 @@ gulp.task('serve', ['sass'], function() {
             .pipe(gulp.dest('dist'));
     });
 
-  gulp.task('img:dist', ['imagemin']);
+    gulp.task('img:dist', ['imagemin']);
 
-  gulp.task('copy:dist', ['html:dist', 'css:dist', 'js:dist', 'img:dist']);
-  gulp.task('inject:dist', ['copy:dist'], function () {
-    var css = gulp.src(paths.distCSS);
-    var js = gulp.src(paths.distJS);
-    var img = gulp.src(paths.distIMG);
-    //var jpg = gulp.src(paths.distJPG);
-    //var png = gulp.src(paths.distPNG);  
-
+    gulp.task('copy:dist', ['html:dist', 'css:dist', 'js:dist', 'img:dist']);
+    gulp.task('inject:dist', ['copy:dist'], function () {
+      var css = gulp.src(paths.distCSS);
+      var js = gulp.src(paths.distJS);
+      var img = gulp.src(paths.distIMG);
+    
     return gulp.src(paths.distIndex)
       .pipe(inject( css, { relative:true } ))
       .pipe(inject( js, { relative:true } ))
       .pipe(inject( img, { relateive:true } ))
-      //.pipe(inject( jpg, { relative:true } ))
-      //.pipe(inject( png, { relative:true } ))
       .pipe(gulp.dest(paths.dist));
-  });
+    });
 
-  gulp.task('build', ['inject:dist']);
+  // DO ALL THE BUILD STUFF AND GET ME MY FILES, PLEASE AND THANK YOU!
 
-// CLEANUP
+    gulp.task('build', ['inject:dist']);
+
+  // SERVE-DIST TASK: FOR WHEN I WANNA SEE THE FINAL PRODUCT IN MY BROWSER.  LOOK HOW FAST IT IS!!!
+   
+    gulp.task('serve-dist',function() {
+
+        browserSync.init({ server: "./dist"  });
+      });
+
+
+// CLEANUP - IT'S JUST LIKE STARTING OVER.  CLEAN UP ALL YOUR DTMP, DIST AND LEFTOVER CSS, LEAVING ONLY YOUR PRISTINE SRC FIILES.
+
 
   gulp.task('clean', function () {
     del([paths.tmp, paths.dist]);
@@ -208,7 +281,7 @@ gulp.task('serve', ['sass'], function() {
 
 // GIT
 
-  // COMMIT + PROMPT
+  // COMMIT + PROMPT... I'm not too sure about this one yet...
     gulp.task('commit', function(){
         var message;
         gulp.src('./*', {buffer:false})
@@ -222,25 +295,11 @@ gulp.task('serve', ['sass'], function() {
         .pipe(git.commit(message));
     });
 
-  // PUSH ORIGIN MASTER
+  // PUSH ORIGIN MASTER: PUSH EVERYTHING TO MY REPO ONCE EVERYTHING IS COMMITTED
 
-    gulp.task('push', function(){
-    git.push('origin', 'master', function (err) {
-      if (err) throw err;
-    });
-  });
-
-
-  //TEMPLATE ENGINE
-
-  gulp.task('nunjucks', function() {
-  // nunjucks stuff here
-  //Gets .html and .nunjucks files in pages
-    return gulp.src('src/pages/**/*.+(html|nunjucks)')
-    //renders template with nunjucks
-    .pipe(nunjucksRender ({
-      path: ['src/templates/nunjucks']
-    }))
-    // output files in app folder
-    .pipe(gulp.dest('src/output'))
-});
+    gulp.task('push', function() {
+      git.push('origin', 'master', function (err) 
+        {
+         if (err) throw err; 
+       }); 
+      });

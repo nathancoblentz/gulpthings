@@ -1,21 +1,27 @@
 @import "util/util.scss";
 
-$enable-shadows: true;
 
+//	this is the base color for your theme
 $themeColor: $BurningOrange;
+//background color
 $bgColor: $themeColor;
+
+// make primary theme color $themeColor
 $theme-colors: ("primary": ($themeColor));
 
+//Set this to white to have a 'wrapper' around your site.  Be sure to use <main> for the main container for your content.
 
 $containerColor: #fff;
+
+// Google Control Panel.  A mixin generates the Google Font import.  
 
 $bodyFont:	Poppins;
 $bodyURL: $bodyFont;
 $bodyColor: $Nero;
 $bodyStyle: sans-serif;
 
-$headingFont:  Ubuntu;
-$headingURL: $headingFont;
+$headingFont:  Roboto Slab;
+$headingURL: ('Roboto+Slab');
 $headingColor: $themeColor;
 $headingStyle: sans-serif;
 
