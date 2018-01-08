@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--[htmlclean-protect]-->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!--[/htmlclean-protect]-->
+  </head>
+  <body>
+    {% import 'macros/nav-macro.nunjucks' as nav %}
+<!-- Creating the navigation with activePage = 'home' -->
+    {{nav.active('home')}}
+    <!-- You write code for this content block in another file -->
+    {% block content %}{% endblock %}
+    <!--[htmlclean-protect]-->
+    <!-- inject:js -->
+    <!-- endinject -->
+    <!--[/htmlclean-protect]-->
+  </body>
+</html>
