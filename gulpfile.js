@@ -50,7 +50,7 @@
     //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH
       src:     'src/**/*',
       srcHTML: 'src/**/*.{html,htm}',
-      srcNJK:  'src/content/**/*.+(html|nunjucks)',
+      srcCONTENT:  'src/content/**/*.+(html|nunjucks)',
       srcCSS:  'src/**/*.scss',
       srcJS:   'src/**/*.js',
       srcIMG:  'src/**/*.{gif,png,jpg}',
@@ -76,10 +76,10 @@
 
     gulp.task('nunjucks', function() {
     // GET ALL MY CONTENT FILES  
-    return gulp.src(paths.srcNJK) 
+    return gulp.src(paths.srcCONTENT) 
 
       // RUN 'EM THROUGH THE TEMPLATE ENGINE
-      .pipe(nunjucksRender ({path: ['src/nunjucks/templates']}))
+      .pipe(nunjucksRender ({path: ['src/templates']}))
 
       // DROP 'EM OFF IN THE ROOT OF THE SRC FOLDER   
       .pipe(gulp.dest('src/')); 
@@ -153,7 +153,7 @@
 
   //WATCH MY NUNJUCKS FILES AND RUN 'NUNJUCKS' (THE TEMPLATE ENGINE) IF ANYTHING CHANGES 
 
-     gulp.watch(paths.srcNJK, ['nunjucks']);
+     gulp.watch(paths.srcCONTENT, ['nunjucks']);
 
   //WATCH MY SASS FILES AND RUN 'SASS' IF ANYTHING CHANGES 
 
