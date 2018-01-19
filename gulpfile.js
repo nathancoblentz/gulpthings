@@ -9,6 +9,11 @@
     var inject = require('gulp-inject');
     var browserSync = require('browser-sync').create();
 
+  //LINTING/DEBUGGING
+
+    var plumber = require('gulp-plumber');
+    var notify = require('gulp-notify');
+
   //COMPILING 
 
     var htmlclean = require('gulp-htmlclean');
@@ -36,11 +41,28 @@
 
     var nunjucksRender = require('gulp-nunjucks-render');
 
+//FUNCTIONS     
+
+    function errorHandler(err) {
+      console.log(err.toString());
+      this.emit('end');
+    }
+
+    function customPlumber(errTitle) {
+    return plumber({
+      //CUSTOMIZING ERROR TITLE
+      title:errTitle || "Error running Gulp",
+      message: "Error: <%= error.message %>",
+      sound: true,
+    })
+    }
+
+
 
 
 //DEFAULT TASK
 
-  gulp.task('default', ['nunjucks', 'inject', 'serve']);
+  gulp.task('default', ['nunjucks', 'inject', 'watch']);
 
 
 //PATH VARIABLES
@@ -96,9 +118,12 @@
   // COPY MY SCSS FILES INTO THE TMP FOLDER
     gulp.task('sass', function() {
         return gulp.src('src/style.scss')
+            .pipe(customPlumber('Error Running Sass'))
             .pipe(sass())
             .pipe(gulp.dest('tmp'))
-            .pipe(browserSync.stream());
+            .pipe(browserSync.reload({
+              stream: true
+            }))
     });  
 
   // COPY MY SCRIPTS INTO THE TMP FOLDER
@@ -145,17 +170,10 @@
 
   //CREATE A VIRTUAL SERVER USING THE FILES IN THE TMP FOLDER, AND MAKE SURE MY SASS IS FRESHLY COMPILED
 
-    gulp.task('watch', function () {         
-
-    gulp.watch(paths.srcCSS, ['sass'])
-    gulp.watch(paths.srcCONTENT, ['nunjucks'])
-    gulp.watch(paths.srcHTML, ['inject'])
-    gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);
-  });
 
 
     gulp.task('browserSync', function() {
-      prowserSync.init ({
+      browserSync.init ({
         server: {
           baseDir: './tmp'
 
@@ -163,14 +181,13 @@
       })
     })
 
-    gulp.task('serve', ['watch'], function() {
-    browserSync.init({ server: "./tmp"  });
-  });
+    gulp.task('watch', ['browserSync', 'sass'], function () {         
 
-
-
-
-
+    gulp.watch(paths.srcCSS, ['sass'])
+    gulp.watch(paths.srcCONTENT, ['nunjucks'])
+    gulp.watch(paths.srcHTML, ['inject'])
+    gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);
+    });
 
 
 //DIST BUILD
@@ -276,13 +293,9 @@
 
 
   gulp.task('clean', function () {
-    del([paths.tmp, paths.dist]);
-    del(['src/**/*.css', 'src/**/*.css.map']);
+    del([paths.tmp, paths.dist]);    
   });
-
-  gulp.task('clearcss', function () {
-    del(['src/**/*.css', 'src/**/*.css.map']);
-  });
+  
 
 // GIT
 
