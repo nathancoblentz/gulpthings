@@ -148,24 +148,23 @@
 
   //CREATE A VIRTUAL SERVER USING THE FILES IN THE TMP FOLDER, AND MAKE SURE MY SASS IS FRESHLY COMPILED
 
-    gulp.task('serve', ['sass'], function() {
+    gulp.task('watch', function () {         
+
+    gulp.watch(paths.srcCSS, ['sass'])
+    gulp.watch(paths.srcCONTENT, ['nunjucks'])
+    gulp.watch(paths.srcHTML, ['inject'])
+    gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);
+  });
+
+
+    gulp.task('serve', ['watch'], function() {
     browserSync.init({ server: "./tmp"  });
+  });
 
-  //WATCH MY NUNJUCKS FILES AND RUN 'NUNJUCKS' (THE TEMPLATE ENGINE) IF ANYTHING CHANGES 
 
-     gulp.watch(paths.srcCONTENT, ['nunjucks']);
 
-  //WATCH MY SASS FILES AND RUN 'SASS' IF ANYTHING CHANGES 
 
-     gulp.watch(paths.srcCSS, ['sass']);
 
-  //WATCH MY HTML FILES AND RUN 'INJECT' IF ANYTHING CHANGES. 
-
-     gulp.watch(paths.srcHTML, ['inject']);
-
-  //WATCH ALL THE HTML FILES AND REFRESH THE BROWSER EVERY TIME I SAVE ANY CHANGES 
-
-       gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);});
 
 
 //DIST BUILD
