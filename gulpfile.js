@@ -94,9 +94,12 @@
   });
 
   // COPY MY SCSS FILES INTO THE TMP FOLDER
-  gulp.task('scss', function () {
-    return gulp.src(paths.srcCSS).pipe(gulp.dest(paths.tmp));
-  });
+    gulp.task('sass', function() {
+        return gulp.src('src/style.scss')
+            .pipe(sass())
+            .pipe(gulp.dest('tmp'))
+            .pipe(browserSync.stream());
+    });  
 
   // COPY MY SCRIPTS INTO THE TMP FOLDER
   gulp.task('js', function () {
@@ -111,21 +114,15 @@
 
   // COPY ALL THE THINGS!!!
 
-    gulp.task('copy', ['html', 'js', 'scss', 'img']);
+    gulp.task('copy', ['html', 'js', 'sass', 'img']);
 
 
   // COMPILE ALL MY SASS AND MOVE IT TO TMP
    
-    gulp.task('sass', function() {
-        return gulp.src('src/style.scss')
-            .pipe(sass())
-            .pipe(gulp.dest('tmp'))
-            .pipe(browserSync.stream());
-    });
 
     // DO ALL THAT STUFF WE JUST SAID IN ONE COMMAND, AND SOME MORE COOL STUFF TOO!!!
 
-    gulp.task('inject', ['sass', 'copy'], function () {
+    gulp.task('inject', ['copy'], function () {
 
   // MAKE MY PATH VARIABLES EVEN SHORTER AND MORE SUCCINCT SO I CAN PASS THEM INTO THIS NEXT FUNCTION
       
@@ -156,6 +153,15 @@
     gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);
   });
 
+
+    gulp.task('browserSync', function() {
+      prowserSync.init ({
+        server: {
+          baseDir: './tmp'
+
+        },
+      })
+    })
 
     gulp.task('serve', ['watch'], function() {
     browserSync.init({ server: "./tmp"  });

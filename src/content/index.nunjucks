@@ -44,7 +44,7 @@
  <div class="jumbotron">
     <div class="container">
       <h1 class="display-1">Bootstrap kickass Theme</h1>
-      <p class="lead">Your site is getting close to being ready!</p>
+      <p class="lead">All Your Bootstrap Are Belong To Us!</p>
       <p>This theme built with Gulp for quick setup from the command line.  Start with the Bash prompt.  Clone the <a href="https://github.com/nathancoblentz/gulpthings">repo</a>.  Enter <span class="txt-code">npm install </span>.  You're almost done!  Enter <span class="txt-code">gulp</span>.  Open variables.scss.  Make something. </p>
 
       <p>This is my workflow for Gulp/SASS/Bootstrap:</p>
