@@ -1,0 +1,5 @@
+{% include "partials/head.nunjucks" %}
+    
+    {% block content %}{% endblock %}
+    
+{% include "partials/footer.nunjucks" %}    
