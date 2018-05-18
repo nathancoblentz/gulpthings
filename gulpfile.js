@@ -71,7 +71,7 @@
 
     //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH
       src:     'src/**/*', //DON'T TOUCH
-      srcHTML: 'src/content/html/*.{html,htm}', //DON'T TOUCH
+      srcHTML: 'src/content/html/**/*.{html,htm}', //DON'T TOUCH
       srcCONTENT:  'src/**/*.+(html|nunjucks)',//DON'T TOUCH
       srcCSS:  'src/**/*.scss', //DON'T TOUCH
       srcJS:   'src/**/*.js',  //DON'T TOUCH
@@ -88,8 +88,10 @@
     //DIST - THESE FILES ARE FULLY PROCESSED, COMPRESSED, MINIFIED AND READY FOR DEPLOYMENT
       dist:       'dist',
       distIndex:  'dist/**/*.{html,htm}',
-      distCSS:    'dist/css/',
-      distJS:     'dist/js/',
+      distCSS:    'dist/**/*.css',
+      distCSSfolder:    'dist/css',
+      distJS:     'dist/**/*.js',
+      distJSfolder:'dist/js',
       distIMG:    'dist/**/*.{gif,png,jpg}'
 
   };
@@ -238,7 +240,7 @@
       return gulp.src(paths.tmpCSS)  //DON'T TOUCH
         .pipe(concat('style.min.css'))
         .pipe(cleanCSS())
-        .pipe(gulp.dest(paths.distCSS));  //DON'T TOUCH
+        .pipe(gulp.dest(paths.distCSSfolder));  //DON'T TOUCH
     });
 
   //COMPILE MY SCRIPTS INTO ONE BIG UGLY MINIFIED .JS FILE AND DROP IT INTO 'DIST/JS' FOR DEPLOYMENT
@@ -247,7 +249,7 @@
       return gulp.src(paths.srcJS)  //DON'T TOUCH
         .pipe(concat('script.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(paths.distJS));  //DON'T TOUCH
+        .pipe(gulp.dest(paths.distJSfolder));  //DON'T TOUCH
     });
   
   //COMPRESS ALL IMAGES - WE CAN DO PLENTY OF FINE TUNING FROM HERE IF NEEDED
