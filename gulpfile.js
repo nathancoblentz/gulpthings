@@ -70,16 +70,17 @@
   var paths = {
 
     //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH
-      src:     'src/**/*',
-      srcHTML: 'src/**/*.{html,htm}',
-      srcCONTENT:  'src/content/**/*.+(html|nunjucks)',
-      srcCSS:  'src/**/*.scss',
-      srcJS:   'src/**/*.js',
+      src:     'src/**/*', //DON'T TOUCH
+      srcHTML: 'src/content/html/*.{html,htm}', //DON'T TOUCH
+      srcCONTENT:  'src/**/*.+(html|nunjucks)',//DON'T TOUCH
+      srcCSS:  'src/**/*.scss', //DON'T TOUCH
+      srcJS:   'src/**/*.js',  //DON'T TOUCH
       srcIMG:  'src/**/*.{gif,png,jpg}',
       
     //TMP - THESE FILES WILL APPEAR ON YOUR VIRTUAL SERVER FOR DEVELOPMENT
       tmp:      'tmp',
       tmpIndex: 'tmp/**/*.{html,htm}',
+      tmpCSSfolder: 'tmp/css', //DON'T TOUCH
       tmpCSS:   'tmp/**/*.css',
       tmpJS:    'tmp/**/*.js',
       tmpIMG:   'tmp/**/*.{gif,png,jpg}',
@@ -87,8 +88,8 @@
     //DIST - THESE FILES ARE FULLY PROCESSED, COMPRESSED, MINIFIED AND READY FOR DEPLOYMENT
       dist:       'dist',
       distIndex:  'dist/**/*.{html,htm}',
-      distCSS:    'dist/**/*.css',
-      distJS:     'dist/**/*.js',
+      distCSS:    'dist/css/',
+      distJS:     'dist/js/',
       distIMG:    'dist/**/*.{gif,png,jpg}'
 
   };
@@ -98,56 +99,59 @@
 
     gulp.task('nunjucks', function() {
     // GET ALL MY CONTENT FILES  
-    return gulp.src(paths.srcCONTENT) 
+    return gulp.src(paths.srcCONTENT) // DON'T TOUCH
 
       // RUN 'EM THROUGH THE TEMPLATE ENGINE
       .pipe(nunjucksRender ({path: ['src/templates']}))
 
-      // DROP 'EM OFF IN THE ROOT OF THE SRC FOLDER   
-      .pipe(gulp.dest('src/')); 
+      // DROP 'EM OFF IN THE ROOT OF THE SRC FOLDER    
+      .pipe(gulp.dest(paths.srcHTML));  //DON'T TOUCH
 
     });
 
 // COPY HTML/CSS/JS
 
-  // COPY THOSE NEWLY PROCESSED FILES INTO THE TMP FOLDER
+// COPY THOSE NEWLY PROCESSED FILES INTO THE TMP FOLDER
   gulp.task('html', function () {
-    return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.tmp));
+    return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.tmp)); //DON'T TOUCH
   });
 
-  // COPY MY SCSS FILES INTO THE TMP FOLDER
+// COPY MY SCSS FILES INTO THE TMP FOLDER
+
     gulp.task('sass', function() {
         return gulp.src('src/style.scss')
             .pipe(customPlumber('Error Running Sass'))
             .pipe(sass())
-            .pipe(gulp.dest('tmp'))
+            .pipe(gulp.dest(paths.tmpCSSfolder)) // IT'S THE FOLDER,  NOT THE FILES            
             .pipe(browserSync.reload({
               stream: true
             }))
     });  
 
-  // COPY MY SCRIPTS INTO THE TMP FOLDER
+// COPY MY SCRIPTS INTO TMP/
+
   gulp.task('js', function () {
-    return gulp.src(paths.srcJS).pipe(gulp.dest(paths.tmp));
+    return gulp.src(paths.srcJS).pipe(gulp.dest(paths.tmp)); //TON'T TOUCH
   });
 
-  // COPY MY IMAGES TO THE TMP FOLDER
+
+// COPY MY IMAGES TO THE TMP FOLDER
   gulp.task('img', function () {
     return gulp.src(paths.srcIMG).pipe(gulp.dest(paths.tmp));
   });
 
 
-  // COPY ALL THE THINGS!!!
+// COPY ALL THE THINGS!!!
 
-    gulp.task('copy', ['html', 'js', 'sass', 'img']);
+  gulp.task('copy', ['html', 'js', 'sass', 'img']);
 
 
   // COMPILE ALL MY SASS AND MOVE IT TO TMP
    
 
-    // DO ALL THAT STUFF WE JUST SAID IN ONE COMMAND, AND SOME MORE COOL STUFF TOO!!!
+// DO ALL THAT STUFF WE JUST SAID IN ONE COMMAND, AND SOME MORE COOL STUFF TOO!!!
 
-    gulp.task('inject', ['copy'], function () {
+  gulp.task('inject', ['copy'], function () {
 
   // MAKE MY PATH VARIABLES EVEN SHORTER AND MORE SUCCINCT SO I CAN PASS THEM INTO THIS NEXT FUNCTION
       
@@ -164,6 +168,33 @@
         .pipe(gulp.dest(paths.tmp));
     });
 
+
+  // INJECT JS/CSS 
+
+//gulp.task('inject:dist', ['copy:dist'], function () {
+//
+//var css = gulp.src(paths.distCSS);
+//var js = gulp.src(paths.distJS);
+//var img = gulp.src(paths.distIMG);
+//    
+//return gulp.src(paths.distIndex)
+//.pipe(inject( css, { relative:true } ))
+//.pipe(inject( js, { relative:true } ))
+////.pipe(inject( img, { relative:true } ))
+//.pipe(gulp.dest(paths.dist));
+//});
+
+    gulp.task('inject:dist', ['copy:dist'], function () {
+      var css = gulp.src(paths.distCSS);
+      var js = gulp.src(paths.distJS);
+      var img = gulp.src(paths.distIMG);
+    
+    return gulp.src(paths.distIndex)
+      .pipe(inject( css, { relative:true } ))
+      .pipe(inject( js, { relative:true } ))
+      .pipe(inject( img, { relateive:true } ))
+      .pipe(gulp.dest(paths.dist));
+});
 
 
 //SERVER, BROWSER-SYNC  
@@ -201,22 +232,22 @@
         .pipe(gulp.dest(paths.dist));
     });
 
-  //MINIFY MY STYLESHEET AND DROP IT INTO 'DIST' FOR DEPLOYMENT
+  //MINIFY MY STYLESHEET AND DROP IT INTO 'DIST/CSS' FOR DEPLOYMENT
     
     gulp.task('css:dist', function () {
-      return gulp.src(paths.tmpCSS)
+      return gulp.src(paths.tmpCSS)  //DON'T TOUCH
         .pipe(concat('style.min.css'))
         .pipe(cleanCSS())
-        .pipe(gulp.dest(paths.dist));
+        .pipe(gulp.dest(paths.distCSS));  //DON'T TOUCH
     });
 
-  //COMPILE MY SCRIPTS INTO ONE BIG UGLY MINIFIED .JS FILE AND DROP IT YOU KNOW WHERE FOR DEPLOYMENT
+  //COMPILE MY SCRIPTS INTO ONE BIG UGLY MINIFIED .JS FILE AND DROP IT INTO 'DIST/JS' FOR DEPLOYMENT
 
     gulp.task('js:dist', function () {
-      return gulp.src(paths.srcJS)
+      return gulp.src(paths.srcJS)  //DON'T TOUCH
         .pipe(concat('script.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(paths.dist));
+        .pipe(gulp.dest(paths.distJS));  //DON'T TOUCH
     });
   
   //COMPRESS ALL IMAGES - WE CAN DO PLENTY OF FINE TUNING FROM HERE IF NEEDED
@@ -260,22 +291,15 @@
                 })
             ]))
             .pipe(gulp.dest('dist'));
-    });
-
+        });
     gulp.task('img:dist', ['imagemin']);
 
+
+  //COPY EVERTTHING TO DIST
+
     gulp.task('copy:dist', ['html:dist', 'css:dist', 'js:dist', 'img:dist']);
-    gulp.task('inject:dist', ['copy:dist'], function () {
-      var css = gulp.src(paths.distCSS);
-      var js = gulp.src(paths.distJS);
-      var img = gulp.src(paths.distIMG);
-    
-    return gulp.src(paths.distIndex)
-      .pipe(inject( css, { relative:true } ))
-      .pipe(inject( js, { relative:true } ))
-      .pipe(inject( img, { relateive:true } ))
-      .pipe(gulp.dest(paths.dist));
-    });
+  
+
 
   // DO ALL THE BUILD STUFF AND GET ME MY FILES, PLEASE AND THANK YOU!
 
