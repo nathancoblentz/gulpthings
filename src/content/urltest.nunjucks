@@ -1,0 +1,63 @@
+{% extends "layout.nunjucks" %}
+
+{% block content %}
+
+    
+     <!--HEADER -->  
+       <header>
+       <!--TITLE-->
+         <h1 class="display-3"><!--<i class="fas fa-ICONCLASS" aria-hidden="true"></i> -->PAGETITLE<br/></h1>
+       <!--NAV-->
+         <nav class="breadcrumbs-bookmarks">
+           <div class="row">
+             <div class="col">
+             <!--BREADCRUMBS-->
+               <ul class="breadcrumb">
+                 <li>
+                   <a href="https://wvholdings.sharepoint.com/rovia/support/"><i class="fas fa-home"></i></a></li>
+                 <li>
+                   <a href="PARENTPAGE">
+                     PARENTPAGE
+                   </a>
+                 </li>
+                 <li aria-current="page">
+                   PAGETITLE
+                 </li>
+               </ul>
+             </div>
+             <div class="col">
+             <!--BOOKMARKS-->
+               <ul class="bookmarks">
+                 <li>
+                   <a class="bookmark" href="#item1">
+                     Hotel Suppliers
+                   </a>
+                 </li>
+                 <li>
+                   <a class="bookmark" href="#item2">
+                     Flights and Vacation Packages
+                   </a>
+                 </li>
+                 <li>
+                   <a class="bookmark" href="#item3">
+                     Cruises
+                   </a>
+                 </li>
+                 <li>
+                   <a class="bookmark" href="#item4">
+                     Tours
+                   </a>
+                 </li>
+               </ul>
+             </div>
+           </div>
+         </nav>
+       </header>
+       <main>
+         <article>
+           
+         </article>
+       </main>
+  
+      
+{% endblock %}

@@ -69,29 +69,35 @@
 
   var paths = {
 
-    //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH
-      src:     'src/**/*', //DON'T TOUCH
-      srcHTML: 'src/content/html/**/*.{html,htm}', //DON'T TOUCH
-      srcCONTENT:  'src/**/*.+(html|nunjucks)',//DON'T TOUCH
-      srcCSS:  'src/**/*.scss', //DON'T TOUCH
-      srcJS:   'src/**/*.js',  //DON'T TOUCH
-      srcIMG:  'src/**/*.{gif,png,jpg}',
-      
+    //SRC - THESE ARE THE FILES YOU WILL BE WORKING WITH      
+       
+        srcCONTENT:  'src/content/*.nunjucks',//DON'T TOUCH        
+          htmlfolder: 'src/content/html', //DON'T TOUCH
+            html: 'src/content/html/*.{html,htm}', //DON'T TOUCH      
+        srcCSS:  'src/**/*.scss', //DON'T TOUCH
+        srcJS:   'src/**/*.js',  //DON'T TOUCH
+        srcIMG:  'src/**/*.{gif,png,jpg}',
+        templates: 'src/templates/',
+
     //TMP - THESE FILES WILL APPEAR ON YOUR VIRTUAL SERVER FOR DEVELOPMENT
+
       tmp:      'tmp',
-      tmpIndex: 'tmp/**/*.{html,htm}',
-      tmpCSSfolder: 'tmp/css', //DON'T TOUCH
-      tmpCSS:   'tmp/**/*.css',
-      tmpJS:    'tmp/**/*.js',
-      tmpIMG:   'tmp/**/*.{gif,png,jpg}',
+        tmpIndex: 'tmp/**/*.{html,htm}',
+        tmpCSSfolder: 'tmp/css', //DON'T TOUCH
+          tmpCSS:   'tmp/**/*.css',
+        tmpJS:    'tmp/**/*.js',
+        tmpIMG:   'tmp/**/*.{gif,png,jpg}',
+      
+
 
     //DIST - THESE FILES ARE FULLY PROCESSED, COMPRESSED, MINIFIED AND READY FOR DEPLOYMENT
+
       dist:       'dist',
       distIndex:  'dist/**/*.{html,htm}',
-      distCSS:    'dist/**/*.css',
-      distCSSfolder:    'dist/css',
-      distJS:     'dist/**/*.js',
+        distCSSfolder:    'dist/css',
+          distCSS:    'dist/**/*.css',      
       distJSfolder:'dist/js',
+        distJS:     'dist/**/*.js',
       distIMG:    'dist/**/*.{gif,png,jpg}'
 
   };
@@ -106,8 +112,8 @@
       // RUN 'EM THROUGH THE TEMPLATE ENGINE
       .pipe(nunjucksRender ({path: ['src/templates']}))
 
-      // DROP 'EM OFF IN THE ROOT OF THE SRC FOLDER    
-      .pipe(gulp.dest(paths.srcHTML));  //DON'T TOUCH
+      // DROP 'EM OFF IN SRC/CONTENT/HTML    
+      .pipe(gulp.dest(paths.htmlfolder));  //DON'T TOUCH
 
     });
 
@@ -115,7 +121,7 @@
 
 // COPY THOSE NEWLY PROCESSED FILES INTO THE TMP FOLDER
   gulp.task('html', function () {
-    return gulp.src(paths.srcHTML).pipe(gulp.dest(paths.tmp)); //DON'T TOUCH
+    return gulp.src(paths.html).pipe(gulp.dest(paths.tmp)); //DON'T TOUCH
   });
 
 // COPY MY SCSS FILES INTO THE TMP FOLDER
@@ -204,7 +210,7 @@
   //CREATE A VIRTUAL SERVER USING THE FILES IN THE TMP FOLDER, AND MAKE SURE MY SASS IS FRESHLY COMPILED
 
 
-
+  
     gulp.task('browserSync', function() {
       browserSync.init ({
         server: {
@@ -218,7 +224,7 @@
 
     gulp.watch(paths.srcCSS, ['sass'])
     gulp.watch(paths.srcCONTENT, ['nunjucks'])
-    gulp.watch(paths.srcHTML, ['inject'])
+    gulp.watch(paths.html, ['inject'])
     gulp.watch('./tmp/**/*.html').on('change', browserSync.reload);
     });
 
@@ -229,7 +235,7 @@
   //MINIFY ALL MY HTML, THEN DROP IT INTO 'DIST' FOR DEPLOYMENT
 
     gulp.task('html:dist', function () {
-      return gulp.src(paths.srcHTML)
+      return gulp.src(paths.html)
         .pipe(htmlclean())
         .pipe(gulp.dest(paths.dist));
     });

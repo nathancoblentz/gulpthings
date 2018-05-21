@@ -11,6 +11,7 @@
     "inject": "^1.0.0-beta2"
   },
   "devDependencies": {
+    "browser-sync-close-hook": "^1.0.5",
     "concat": "^1.0.3",
     "del": "^3.0.0",
     "gulp-clean-css": "^3.9.0",
